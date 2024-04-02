@@ -6,12 +6,16 @@ const dotenv = require("dotenv").config()
 var logger = require('morgan');
 const connectDb = require("./config/db")
 const cors = require("cors")
+// const connectCoachFinderDb = require('./config/coachFinderDb')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var phoneBookRouter = require("./routes/phonebook")
+var coachFinderRouter = require("./routes/coachfinder")
 
 connectDb()
+
+// connectCoachFinderDb()
 
 var app = express();
 
@@ -28,6 +32,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use("/api/phonebook", phoneBookRouter)
+
+app.use("/api/coachfinder", coachFinderRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

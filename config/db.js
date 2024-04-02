@@ -3,12 +3,15 @@ const mongoose = require("mongoose")
 
 const connectDb = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI)
-    console.log(`mongodb connected ${conn.connection.host}`)
+    // Connect to the first database
+    const conn = await mongoose.connect(process.env.MONGO_URI);
+    console.log(`First MongoDB connected: ${conn.connection.host}`);
+
+    
   } catch (error) {
-    console.log(error)
-    process.exit(1) //close process with failure 1
+    console.error(error);
+    process.exit(1); // Close process with failure 1
   }
-}
+};
 
 module.exports = connectDb
