@@ -4,12 +4,30 @@ const sanitize = require("mongo-sanitize")
 const axios = require('axios').default;
 
 
-const { MailtrapClient } = require("mailtrap")
-const client = new MailtrapClient({ token: process.env.MAILTRAP_TOKEN })
+// const { MailtrapClient } = require("mailtrap")
+// const client = new MailtrapClient({ token: process.env.MAILTRAP_TOKEN })
+// const sender = {
+//   name: "coachfinder",
+//   email: process.env.MAILTRAP_SENDER_EMAIL,
+// }
+
+const { MailtrapClient } = require("mailtrap");
+
+const TOKEN = process.env.MAILTRAP_TOKEN
+const ENDPOINT = "https://send.api.mailtrap.io/";
+
+const client = new MailtrapClient({ endpoint: ENDPOINT, token: TOKEN });
+
 const sender = {
-  name: "coachfinder",
   email: process.env.MAILTRAP_SENDER_EMAIL,
-}
+  name: "CoachFinder",
+};
+const recipients = [
+  {
+    email: process.env.COACHFINDER_TO_EMAIL,
+  }
+];
+
 
 
 
@@ -57,22 +75,42 @@ const preReg = asyncHandler(async (req, res) => {
       });
   
       // Send email
-      await sendEmail({
-        from: sender,
-        to: [{ email: coachFinderEmail }],
-        subject: `CoachFinder Pre-Registration`,
-        text: `
-          Registration details:
+    //   await sendEmail({
+    //     from: sender,
+    //     to: [{ email: coachFinderEmail }],
+    //     subject: `CoachFinder Pre-Registration`,
+    //     text: `
+    //       Registration details:
           
-          type: ${type}
-          email: ${email}
-          name: ${name}
-          age: ${age}
-          gender: ${gender}
-          topics: ${services}
-          expertise: ${expertiseSimple}
-        `,
-      });
+    //       type: ${type}
+    //       email: ${email}
+    //       name: ${name}
+    //       age: ${age}
+    //       gender: ${gender}
+    //       topics: ${services}
+    //       expertise: ${expertiseSimple}
+    //     `,
+    //   });
+
+    client
+  .send({
+    from: sender,
+    to: recipients,
+    subject: "CoachFinder Pre-Registration",
+    text: `
+           Registration details:
+          
+           type: ${type}
+           email: ${email}
+           name: ${name}
+           age: ${age}
+           gender: ${gender}
+           topics: ${services}
+           expertise: ${expertiseSimple}
+         `,
+    category: "Integration Test",
+  })
+  .then(console.log, console.error);
   
       return res.status(200).json({ message: "Form submitted successfully" });
     } catch (error) {
@@ -82,14 +120,6 @@ const preReg = asyncHandler(async (req, res) => {
   });
 
 // Define function to send email asynchronously
-const sendEmail = (emailOptions) => {
-  client.send(emailOptions, (error, info) => {
-    if (error) {
-      console.error('Error sending email:', error);
-    } else {
-      console.log('Email sent:', info.response);
-    }
-  });
-};
+
 
 module.exports = { print, preReg };
