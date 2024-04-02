@@ -38,6 +38,9 @@ const coachFinderPreRegSchema = mongoose.Schema(
           of: Number, // Values are numbers
           required: [true, "Please add expertise for each service"],
         },
+        expertiseSimple: {
+          type: [String], // Array of strings
+        },
       },
       {
         timestamps: true,
